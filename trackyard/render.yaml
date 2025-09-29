@@ -1,16 +1,11 @@
 services:
   - type: web
     name: trackyard
-    env: java
+    env: docker
     plan: starter
-    buildCommand: ./mvnw clean package -DskipTests
-    startCommand: java -Dspring.profiles.active=render -jar target/trackyard-0.0.1-SNAPSHOT.jar
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: SPRING_PROFILES_ACTIVE
         value: render
       - key: JAVA_OPTS
         value: -Xmx512m -Xms256m
-    disk:
-      name: trackyard-data
-      mountPath: /persistent
-      sizeGB: 1

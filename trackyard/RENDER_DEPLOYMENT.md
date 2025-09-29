@@ -1,14 +1,15 @@
-# Deploy no Render - TrackYard
+# Deploy no Render - TrackYard (Plano Gratuito)
 
-## Configuração para Persistência de Dados
+## Configuração para H2 em Memória
 
-Este projeto está configurado para usar H2 com armazenamento persistente no Render.
+Este projeto está configurado para usar H2 em memória no plano gratuito do Render, com dados de exemplo carregados a cada startup.
 
 ### Arquivos de Configuração
 
 1. **`application-render.properties`** - Configuração específica para o Render
 2. **`render.yaml`** - Configuração do serviço no Render
-3. **`scripts/init-db.sh`** - Script de inicialização do banco
+3. **`data.sql`** - Dados de exemplo carregados a cada startup
+4. **`Dockerfile`** - Configuração Docker para deploy
 
 ### Passos para Deploy
 
@@ -21,30 +22,22 @@ Este projeto está configurado para usar H2 com armazenamento persistente no Ren
 
 **Configurações Básicas:**
 - **Name**: `trackyard`
-- **Environment**: `Java`
-- **Build Command**: `./mvnw clean package -DskipTests`
-- **Start Command**: `java -Dspring.profiles.active=render -jar target/trackyard-0.0.1-SNAPSHOT.jar`
+- **Environment**: `Docker` (ou `Java` se aparecer)
+- **Dockerfile Path**: `./Dockerfile` (se escolher Docker)
+- **Build Command**: `./mvnw clean package -DskipTests` (se escolher Java)
+- **Start Command**: `java -Dspring.profiles.active=render -jar target/trackyard-0.0.1-SNAPSHOT.jar` (se escolher Java)
 
 **Variáveis de Ambiente:**
 - `SPRING_PROFILES_ACTIVE` = `render`
 - `JAVA_OPTS` = `-Xmx512m -Xms256m`
 
-#### 2. Configurar Volume Persistente
-
-1. No dashboard do Render, vá para seu serviço
-2. Clique em "Settings" → "Disks"
-3. Adicione um novo disco:
-   - **Name**: `trackyard-data`
-   - **Mount Path**: `/persistent`
-   - **Size**: `1 GB`
-
-#### 3. Deploy
+#### 2. Deploy
 
 1. Clique em "Deploy" no dashboard
 2. O Render irá:
-   - Fazer build da aplicação
-   - Montar o volume persistente
+   - Fazer build da aplicação usando Docker
    - Iniciar a aplicação com o perfil `render`
+   - Carregar dados de exemplo automaticamente
 
 ### Verificação
 
@@ -52,17 +45,27 @@ Após o deploy, você pode acessar:
 - **API**: `https://seu-app.onrender.com`
 - **H2 Console**: `https://seu-app.onrender.com/h2-console`
 
-### Dados Persistentes
+### Dados de Exemplo
 
-Os dados do H2 serão salvos em `/persistent/data/trackyard-db.mv.db` e persistirão entre deploys.
+A aplicação carrega automaticamente dados de exemplo a cada startup:
+- 3 Pátios (Central, Norte, Sul)
+- 4 Pontos de Leitura
+- 4 Motos com diferentes status
+- 4 Movimentações de exemplo
+
+### ⚠️ Limitações do Plano Gratuito
+
+- **Dados não persistem** entre deploys (são recarregados a cada startup)
+- **Aplicação "dorme"** após 15 minutos de inatividade
+- **Primeira requisição** após dormir pode demorar alguns segundos
 
 ### Troubleshooting
 
 **Problema**: Dados perdidos após deploy
-**Solução**: Verifique se o volume persistente está montado corretamente em `/persistent`
-
-**Problema**: Erro de permissão
-**Solução**: O script `init-db.sh` cria o diretório com as permissões corretas
+**Solução**: Normal no plano gratuito - dados são recarregados automaticamente
 
 **Problema**: Aplicação não inicia
 **Solução**: Verifique os logs no dashboard do Render e confirme se o perfil `render` está ativo
+
+**Problema**: Aplicação demora para responder
+**Solução**: Normal no plano gratuito - aplicação "acorda" na primeira requisição
