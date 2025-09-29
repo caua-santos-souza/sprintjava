@@ -22,10 +22,8 @@ Este projeto está configurado para usar H2 em memória no plano gratuito do Ren
 
 **Configurações Básicas:**
 - **Name**: `trackyard`
-- **Environment**: `Docker` (ou `Java` se aparecer)
-- **Dockerfile Path**: `./Dockerfile` (se escolher Docker)
-- **Build Command**: `./mvnw clean package -DskipTests` (se escolher Java)
-- **Start Command**: `java -Dspring.profiles.active=render -jar target/trackyard-0.0.1-SNAPSHOT.jar` (se escolher Java)
+- **Environment**: `Docker`
+- **Dockerfile Path**: `./Dockerfile`
 
 **Variáveis de Ambiente:**
 - `SPRING_PROFILES_ACTIVE` = `render`
