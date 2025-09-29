@@ -62,6 +62,12 @@ public class MotoController {
         return ResponseEntity.ok(motoService.findByPlaca(placa));
     }
 
+    //Método PUT para atualizar moto por placa (para QR Code)
+    @PutMapping("/placa/{placa}")
+    public ResponseEntity<MotosDTO> updateMotoByPlaca(@PathVariable String placa, @Valid @RequestBody MotosDTO dto) {
+        return ResponseEntity.ok(motoService.updateMotoByPlaca(placa, dto));
+    }
+
     //Método GET para exibir o histórico de movimentações de uma determinada moto através do ID
     @GetMapping("/{idMoto}/historico")
     public ResponseEntity<Page<MovimentacoesDTO>> listarHistorico(@PathVariable String idMoto, Pageable pageable) {

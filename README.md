@@ -88,7 +88,8 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 | **GET** | `/api/motos/placa/{placa}` | Busca moto por placa | - | `200 OK` - Dados da moto |
 | **GET** | `/api/motos/{id}/historico` | Histórico de movimentações | - | `200 OK` - Lista de movimentações |
 | **POST** | `/api/motos` | Cria nova moto | `{"idMoto": "MOTO001", "modelo": "Pop", "placa": "ABC-1234"}` | `201 Created` |
-| **PUT** | `/api/motos/{id}` | Atualiza moto | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
+| **PUT** | `/api/motos/{id}` | Atualiza moto por ID | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
+| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (QR Code)** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
 | **DELETE** | `/api/motos/{id}` | Deleta moto | - | `200 OK` - Mensagem de sucesso |
 
 ### 📍 **Pontos de Leitura** (`/api/pontos-leitura`)
@@ -115,32 +116,13 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 | **GET** | `/api/enums/modelos-motos` | Lista modelos válidos | `["Pop", "Sport", "E"]` |
 | **GET** | `/api/enums/pontos-leitura` | Lista pontos válidos | `["defeito motor", "dano estrutural", "minha mottu", "agendamento", "pendência", "reparos simples", "para alugar", "sem placa"]` |
 
-## 🎯 **Exemplo de Uso para Frontend**
+## 🎯 **Endpoints Principais para Frontend**
 
-### 1. **Listar Pátios**
-```javascript
-const response = await fetch('https://trackyard.onrender.com/api/patios');
-const data = await response.json();
-console.log(data.content); // Lista de pátios
-```
-
-### 2. **Buscar Motos de um Pátio**
-```javascript
-const response = await fetch('https://trackyard.onrender.com/api/patios/1/motos');
-const patioComMotos = await response.json();
-console.log(patioComMotos.motos); // Lista de motos com pontos
-```
-
-### 3. **Obter Valores Válidos**
-```javascript
-// Modelos de motos
-const modelos = await fetch('https://trackyard.onrender.com/api/enums/modelos-motos')
-  .then(r => r.json());
-
-// Pontos de leitura
-const pontos = await fetch('https://trackyard.onrender.com/api/enums/pontos-leitura')
-  .then(r => r.json());
-```
+- **Listar pátios**: `GET /api/patios`
+- **Motos por pátio**: `GET /api/patios/{id}/motos`
+- **Buscar moto por placa**: `GET /api/motos/placa/{placa}`
+- **Atualizar moto por placa**: `PUT /api/motos/placa/{placa}` (para QR Code)
+- **Valores válidos**: `GET /api/enums/modelos-motos` e `GET /api/enums/pontos-leitura`
 
 ## ⚠️ **Validações**
 

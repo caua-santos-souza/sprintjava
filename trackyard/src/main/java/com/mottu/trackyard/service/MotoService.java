@@ -71,4 +71,19 @@ public class MotoService {
         }
         return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
     }
+
+    //Atualiza uma moto por placa (para QR Code)
+    @CacheEvict(value = "motos", allEntries = true)
+    public MotosDTO updateMotoByPlaca(String placa, MotosDTO dto) {
+        Motos moto = motosRepository.findByPlaca(placa);
+        if (moto == null) {
+            throw new RuntimeException("Moto não encontrada com a placa: " + placa);
+        }
+        
+        // Atualiza apenas o modelo (placa não pode ser alterada)
+        moto.setModelo(dto.modelo());
+        motosRepository.save(moto);
+        
+        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+    }
 }
