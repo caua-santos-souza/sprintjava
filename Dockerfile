@@ -1,22 +1,20 @@
-# Use a imagem oficial do OpenJDK 17
+# Use a imagem oficial do OpenJDK 17 com Maven
 FROM openjdk:17-jdk-slim
+
+# Instalar Maven
+RUN apt-get update && apt-get install -y maven && rm -rf /var/lib/apt/lists/*
 
 # Definir diretório de trabalho
 WORKDIR /app
 
 # Copiar arquivos de configuração do Maven
 COPY trackyard/pom.xml .
-COPY trackyard/mvnw .
-COPY trackyard/.mvn .mvn
 
 # Copiar código fonte
 COPY trackyard/src src
 
-# Dar permissão de execução para o wrapper do Maven
-RUN chmod +x mvnw
-
-# Construir a aplicação
-RUN ./mvnw clean package -DskipTests
+# Construir a aplicação usando Maven
+RUN mvn clean package -DskipTests
 
 # H2 em memória não precisa de diretório persistente
 
