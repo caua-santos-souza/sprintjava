@@ -2,12 +2,24 @@
 
 **TrackYard** é uma aplicação Java desenvolvida com o objetivo de gerenciar a organização das motos da Mottu dentro dos pátios, ajudando a evitar a perda inesperada de motos.
 
-## Funcionalidades
+## 🚀 Funcionalidades
 
-- Gerenciamento de pátios.
-- Gerenciamento de pontos de leitura associados a pátios.
-- Gerenciamento de motos.
-- Registro e histórico de movimentações de motos entre pontos de leitura.
+- **Gerenciamento de pátios** - CRUD completo de pátios
+- **Gerenciamento de motos** - CRUD completo de motos com validações
+- **Pontos de leitura** - Áreas específicas dentro dos pátios (8 tipos pré-definidos)
+- **Movimentações** - Registro de onde cada moto está localizada
+- **API REST** - Endpoints para integração com frontend
+- **Validações** - Garantia de consistência dos dados
+- **Deploy no Render** - Aplicação disponível na nuvem
+
+## 🌐 API em Produção
+
+A aplicação está disponível em: **https://trackyard.onrender.com**
+
+### 🔗 Endpoints Principais:
+- **Listar pátios**: `GET /api/patios`
+- **Motos por pátio**: `GET /api/patios/{id}/motos`
+- **Valores válidos**: `GET /api/enums/modelos-motos` e `GET /api/enums/pontos-leitura`
 
 ## Pré-requisitos
 
@@ -54,75 +66,131 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 - `com.mottu.trackyard.dto`: Contém os DTOs para transferência de dados.
 - `com.mottu.trackyard.exception`: Contém a classe que centraliza o tratamento de exceções.
 
-## Endpoints da API
+## 📚 Documentação da API
 
-### Pátios (`/api/patios`)
+### 🏢 **Pátios** (`/api/patios`)
 
-| Método      | Endpoint         | Descrição                     | Corpo da Requisição (JSON)                                      | Resposta de Sucesso         |
-|-------------|------------------|-------------------------------|----------------------------------------------------------------|-----------------------------|
-| POST        | `/api/patios`    | Cria um novo pátio            | `{"idPatio": 1, "nome": "Pátio master mottu", "telefone": "41-4444-5555", "endereco": "Rua Antiga, 789, SP"}` | `201 Created` com `PatiosDTO` |
-| GET         | `/api/patios`    | Lista pátios (paginado)       | -                                                              | `200 OK` com página de `PatiosDTO` |
-| GET         | `/api/patios/{idPatio}` | Busca pátio por ID         | -                                                              | `200 OK` com `PatiosDTO`    |
-| PUT         | `/api/patios/{idPatio}` | Atualiza um pátio por ID  | `{"idPatio": 1, "nome": "Pátio master mottu novo", "telefone": "41-5555-6666", "endereco": "Rua Nova, 789, SP"}` | `200 OK` com `PatiosDTO` |
-| DELETE      | `/api/patios/{idPatio}` | Deleta um pátio por ID    | -                                                              | `200 OK` com mensagem       |
+| Método | Endpoint | Descrição | Request Body | Response |
+|--------|----------|-----------|--------------|----------|
+| **GET** | `/api/patios` | Lista todos os pátios (paginado) | - | `200 OK` - Lista de pátios |
+| **GET** | `/api/patios/{id}` | Busca pátio por ID | - | `200 OK` - Dados do pátio |
+| **GET** | `/api/patios/{id}/motos` | **🎯 Pátio com motos e pontos** | - | `200 OK` - Pátio + motos + pontos |
+| **POST** | `/api/patios` | Cria novo pátio | `{"idPatio": 1, "nome": "Pátio Central", "telefone": "(11)99999-9999", "endereco": "Rua das Flores, 123"}` | `201 Created` |
+| **PUT** | `/api/patios/{id}` | Atualiza pátio | `{"idPatio": 1, "nome": "Pátio Central", "telefone": "(11)99999-9999", "endereco": "Rua das Flores, 123"}` | `200 OK` |
+| **DELETE** | `/api/patios/{id}` | Deleta pátio | - | `200 OK` - Mensagem de sucesso |
 
-### Pontos de Leitura (`/api/pontos-leitura`)
+### 🏍️ **Motos** (`/api/motos`)
 
-| Método      | Endpoint             | Descrição                     | Corpo da Requisição (JSON)                                      | Resposta de Sucesso         |
-|-------------|----------------------|-------------------------------|----------------------------------------------------------------|-----------------------------|
-| POST        | `/api/pontos-leitura`| Cria um novo ponto de leitura | `{"idPonto": 1, "idPatio": 1, "nomePonto": "Entrada", "descricao": "Ponto de entrada do pátio SP"}` | `201 Created` com `PontosLeituraDTO` |
-| GET         | `/api/pontos-leitura`| Lista pontos (paginado)       | -                                                              | `200 OK` com página de `PontosLeituraDTO` |
-| GET         | `/api/pontos-leitura/{idPonto}` | Busca ponto por ID     | -                                                              | `200 OK` com `PontosLeituraDTO` |
-| PUT         | `/api/pontos-leitura/{idPonto}` | Atualiza um ponto por ID     | `{"idPonto": 1, "idPatio": 1, "nomePonto": "Saída Principal", "descricao": "Ponto de saída do pátio SP"}` | `200 OK` com `PontosLeituraDTO` |
-| DELETE      | `/api/pontos-leitura/{idPonto}` | Deleta um ponto por ID      | -                                                              | `200 OK` com mensagem       |
+| Método | Endpoint | Descrição | Request Body | Response |
+|--------|----------|-----------|--------------|----------|
+| **GET** | `/api/motos` | Lista todas as motos (paginado) | - | `200 OK` - Lista de motos |
+| **GET** | `/api/motos/{id}` | Busca moto por ID | - | `200 OK` - Dados da moto |
+| **GET** | `/api/motos/placa/{placa}` | Busca moto por placa | - | `200 OK` - Dados da moto |
+| **GET** | `/api/motos/{id}/historico` | Histórico de movimentações | - | `200 OK` - Lista de movimentações |
+| **POST** | `/api/motos` | Cria nova moto | `{"idMoto": "MOTO001", "modelo": "Pop", "placa": "ABC-1234"}` | `201 Created` |
+| **PUT** | `/api/motos/{id}` | Atualiza moto | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
+| **DELETE** | `/api/motos/{id}` | Deleta moto | - | `200 OK` - Mensagem de sucesso |
 
-### Motos (`/api/motos`)
+### 📍 **Pontos de Leitura** (`/api/pontos-leitura`)
 
-| Método      | Endpoint                 | Descrição                     | Corpo da Requisição (JSON)                                      | Resposta de Sucesso         |
-|-------------|--------------------------|-------------------------------|----------------------------------------------------------------|-----------------------------|
-| POST        | `/api/motos`             | Cria uma nova moto            | `{"idMoto": "MOTO001", "modelo": "Mottu Sport 110i", "placa": "CBA-0219"}` | `201 Created` com `MotosDTO` |
-| GET         | `/api/motos`             | Lista motos (paginado)        | -                                                              | `200 OK` com página de `MotosDTO` |
-| GET         | `/api/motos/{idMoto}`    | Busca moto por ID             | -                                                              | `200 OK` com `MotosDTO`    |
-| GET         | `/api/motos/placa/{placa}`| Busca moto por placa          | -                                                              | `200 OK` com `MotosDTO`    |
-| GET         | `/api/motos/{idMoto}/historico` | Exibe histórico de movimentações | -                                                  | `200 OK` com página de `MovimentacoesDTO` |
-| PUT         | `/api/motos/{idMoto}`    | Atualiza uma moto por ID      | `{"idMoto": "MOTO001", "modelo": "Mottu Sport 110i", "placa": "CBA-0011"}` | `200 OK` com `MotosDTO` |
-| DELETE      | `/api/motos/{idMoto}`    | Deleta uma moto por ID        | -                                                              | `200 OK` com mensagem       |
+| Método | Endpoint | Descrição | Request Body | Response |
+|--------|----------|-----------|--------------|----------|
+| **GET** | `/api/pontos-leitura` | Lista pontos (paginado) | - | `200 OK` - Lista de pontos |
+| **GET** | `/api/pontos-leitura/{id}` | Busca ponto por ID | - | `200 OK` - Dados do ponto |
+| **POST** | `/api/pontos-leitura` | Cria novo ponto | `{"idPonto": 1, "idPatio": 1, "nomePonto": "pendência", "descricao": "Área de pendências"}` | `201 Created` |
+| **PUT** | `/api/pontos-leitura/{id}` | Atualiza ponto | `{"idPonto": 1, "idPatio": 1, "nomePonto": "reparos simples", "descricao": "Área de reparos"}` | `200 OK` |
+| **DELETE** | `/api/pontos-leitura/{id}` | Deleta ponto | - | `200 OK` - Mensagem de sucesso |
 
-### Movimentações (`/api/movimentacoes`)
+### 🚛 **Movimentações** (`/api/movimentacoes`)
 
-| Método      | Endpoint                 | Descrição                     | Corpo da Requisição (JSON)                                      | Resposta de Sucesso         |
-|-------------|--------------------------|-------------------------------|----------------------------------------------------------------|-----------------------------|
-| POST        | `/api/movimentacoes`     | Registra uma movimentação     | `{"idMoto": "MOTO001", "idPonto": 1, "dataHora": "2025-05-07T10:00:00"}` | `201 Created` |
-| GET         | `/api/movimentacoes/{idMovimentacao}` | Lista movimentação por ID | -                                                      | `200 OK` com `MovimentacoesDTO` |
+| Método | Endpoint | Descrição | Request Body | Response |
+|--------|----------|-----------|--------------|----------|
+| **GET** | `/api/movimentacoes/{id}` | Busca movimentação por ID | - | `200 OK` - Dados da movimentação |
+| **POST** | `/api/movimentacoes` | Registra movimentação | `{"idMoto": "MOTO001", "idPonto": 1}` | `201 Created` |
 
-## Testes
+### 🔧 **Enums/Valores Válidos** (`/api/enums`)
 
-1. **Usando o Workspace do Postman**
+| Método | Endpoint | Descrição | Response |
+|--------|----------|-----------|----------|
+| **GET** | `/api/enums/modelos-motos` | Lista modelos válidos | `["Pop", "Sport", "E"]` |
+| **GET** | `/api/enums/pontos-leitura` | Lista pontos válidos | `["defeito motor", "dano estrutural", "minha mottu", "agendamento", "pendência", "reparos simples", "para alugar", "sem placa"]` |
 
-   - Um workspace com requisições pré-definidas foi criado para facilitar os testes. Acesse em:
+## 🎯 **Exemplo de Uso para Frontend**
 
-     [TrackYard API Tests](https://bold-zodiac-707210.postman.co/workspace/Personal-Workspace~4701d561-f092-46f6-a63c-0560d2fd1507/collection/39387306-06cd5d63-7cab-4aaf-9c69-e5983de04042?action=share&creator=39387306)
+### 1. **Listar Pátios**
+```javascript
+const response = await fetch('https://trackyard.onrender.com/api/patios');
+const data = await response.json();
+console.log(data.content); // Lista de pátios
+```
 
-   - **Instruções**:
-     - Abra o link no Postman.
-     - Certifique-se de que a aplicação está rodando (`http://localhost:8080`).
-     - Execute as requisições da coleção e verifique as respostas.
-     - Observação: O Postman apenas executa requisições do tipo localhost dentro do app Postman, ou seja, não é possível fazer requisições na web.
+### 2. **Buscar Motos de um Pátio**
+```javascript
+const response = await fetch('https://trackyard.onrender.com/api/patios/1/motos');
+const patioComMotos = await response.json();
+console.log(patioComMotos.motos); // Lista de motos com pontos
+```
 
-2. **Verificação Manual no H2 Console**
+### 3. **Obter Valores Válidos**
+```javascript
+// Modelos de motos
+const modelos = await fetch('https://trackyard.onrender.com/api/enums/modelos-motos')
+  .then(r => r.json());
 
-   - Acesse `http://localhost:8080/h2-console`.
-   - Execute:
-     ```sql
-     SELECT * FROM Patios;
-     SELECT * FROM Pontos_Leitura;
-     SELECT * FROM Motos;
-     SELECT * FROM Movimentacoes;
-     ```
+// Pontos de leitura
+const pontos = await fetch('https://trackyard.onrender.com/api/enums/pontos-leitura')
+  .then(r => r.json());
+```
 
-3. **Cenários de Erro**
+## ⚠️ **Validações**
 
-   - Teste casos como criar um pátio com `idPatio` duplicado ou deletar uma moto inexistente, por exemplo.
+- **Modelos de motos**: Apenas `Pop`, `Sport`, `E`
+- **Pontos de leitura**: Apenas os 8 tipos pré-definidos
+- **Campos obrigatórios**: Todos os campos marcados com `@NotBlank` ou `@NotNull`
+
+## 🧪 **Testes e Validação**
+
+### **Teste Online (Recomendado)**
+A API está disponível em produção, você pode testar diretamente:
+
+```bash
+# Listar pátios
+curl https://trackyard.onrender.com/api/patios
+
+# Buscar motos do pátio 1
+curl https://trackyard.onrender.com/api/patios/1/motos
+
+# Obter valores válidos
+curl https://trackyard.onrender.com/api/enums/modelos-motos
+curl https://trackyard.onrender.com/api/enums/pontos-leitura
+```
+
+### **Teste Local**
+Para testar localmente:
+
+1. **Execute a aplicação**:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+2. **Acesse o H2 Console**:
+   - URL: `http://localhost:8080/h2-console`
+   - JDBC URL: `jdbc:h2:mem:trackyard`
+   - Username: `sa`
+   - Password: (deixe em branco)
+
+3. **Teste com Postman**:
+   - Base URL: `http://localhost:8080`
+   - Coleção disponível: [TrackYard API Tests](https://bold-zodiac-707210.postman.co/workspace/Personal-Workspace~4701d561-f092-46f6-a63c-0560d2fd1507/collection/39387306-06cd5d63-7cab-4aaf-9c69-e5983de04042?action=share&creator=39387306)
+
+## 🚀 **Deploy no Render**
+
+A aplicação está configurada para deploy automático no Render:
+
+- **URL de Produção**: `https://trackyard.onrender.com`
+- **Banco de Dados**: H2 em memória (dados recarregados a cada startup)
+- **Configuração**: Docker com Java 17
+- **Plano**: Gratuito (aplicação "dorme" após 15 min de inatividade)
 
 ## Integrantes
 

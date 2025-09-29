@@ -1,6 +1,7 @@
 package com.mottu.trackyard.controller;
 
 import com.mottu.trackyard.dto.PatiosDTO;
+import com.mottu.trackyard.dto.PatioComMotosDTO;
 import com.mottu.trackyard.service.PatioService;
 
 import org.springframework.data.domain.Page;
@@ -48,5 +49,11 @@ public class PatioController {
     public ResponseEntity<String> deletePatio(@PathVariable Long idPatio) {
         patioService.deletePatio(idPatio);
         return ResponseEntity.ok("Pátio com ID " + idPatio + " foi deletado com sucesso!");
+    }
+
+    //Buscar pátio com suas motos e pontos de movimentação
+    @GetMapping("/{idPatio}/motos")
+    public ResponseEntity<PatioComMotosDTO> getPatioComMotos(@PathVariable Long idPatio) {
+        return ResponseEntity.ok(patioService.getPatioComMotos(idPatio));
     }
 }

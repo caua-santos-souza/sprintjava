@@ -1,5 +1,6 @@
 package com.mottu.trackyard.dto;
 
+import com.mottu.trackyard.validation.ValidPontoLeitura;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -11,7 +12,7 @@ public record PontosLeituraDTO(
     Long idPatio,
 
     @NotBlank(message = "Nome do ponto é obrigatório")
-    @Size(max = 50, message = "Nome do ponto deve ter no máximo 50 caracteres")
+    @ValidPontoLeitura
     String nomePonto,
 
     @Size(max = 200, message = "Descrição deve ter no máximo 200 caracteres")

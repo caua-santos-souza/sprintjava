@@ -10,4 +10,5 @@ import java.util.List;
 public interface MovimentacoesRepository extends JpaRepository<Movimentacoes, Long> {
     List<Movimentacoes> findByMotoIdMoto(String idMoto); 
     Page<Movimentacoes> findByMotoIdMoto(String idMoto, Pageable pageable); 
+    List<Movimentacoes> findByPontoLeituraPatioIdPatio(Long idPatio);
 }
