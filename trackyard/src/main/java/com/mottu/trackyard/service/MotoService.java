@@ -38,13 +38,13 @@ public class MotoService {
         moto.setModelo(dto.modelo());
         moto.setPlaca(dto.placa());
         motosRepository.save(moto);
-        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), dto.ponto());
     }
 
     //Pagina todas as motos
     public Page<MotosDTO> getAllMotos(Pageable pageable) {
         return motosRepository.findAll(pageable)
-            .map(moto -> new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca()));
+            .map(moto -> new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), null));
     }
 
     //Exibe determinada moto
@@ -52,7 +52,7 @@ public class MotoService {
     public MotosDTO getMotoById(String idMoto) {
         Motos moto = motosRepository.findById(idMoto)
             .orElseThrow(() -> new RuntimeException("Moto não encontrada"));
-        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), null);
     }
 
     //Atualiza determinada moto
@@ -66,7 +66,7 @@ public class MotoService {
         moto.setModelo(dto.modelo());
         moto.setPlaca(dto.placa());
         motosRepository.save(moto);
-        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), dto.ponto());
     }
 
     //Deleta uma determinada moto

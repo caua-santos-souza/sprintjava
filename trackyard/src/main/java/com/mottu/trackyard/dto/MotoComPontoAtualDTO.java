@@ -9,7 +9,6 @@ public record MotoComPontoAtualDTO(
     @Size(max = 50, message = "ID da moto deve ter no máximo 50 caracteres")
     String idMoto,
 
-    @NotBlank(message = "Modelo é obrigatório")
     @ValidModeloMoto
     String modelo,
 

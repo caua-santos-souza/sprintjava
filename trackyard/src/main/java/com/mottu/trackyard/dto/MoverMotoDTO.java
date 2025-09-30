@@ -1,6 +1,5 @@
 package com.mottu.trackyard.dto;
 
-import com.mottu.trackyard.validation.ValidPontoLeitura;
 import jakarta.validation.constraints.NotNull;
 
 public record MoverMotoDTO(

@@ -86,7 +86,7 @@ public class MotoController {
 
     //Mover moto para outro ponto por placa (para QR Code)
     @PutMapping("/placa/{placa}/mover")
-    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlaca(@PathVariable String placa, @RequestBody MoverMotoDTO dto) {
+    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlaca(@PathVariable String placa, @RequestBody @Valid MoverMotoDTO dto) {
         System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa + "/mover");
         System.out.println("DEBUG: Ponto destino: " + dto.idPontoDestino());
         
@@ -98,7 +98,7 @@ public class MotoController {
 
     //Mover moto para outro ponto usando nome do ponto (versão simples)
     @PutMapping("/placa/{placa}/mover-para")
-    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlacaSimples(@PathVariable String placa, @RequestBody MoverMotoSimplesDTO dto) {
+    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlacaSimples(@PathVariable String placa, @RequestBody @Valid MoverMotoSimplesDTO dto) {
         System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa + "/mover-para");
         System.out.println("DEBUG: Ponto destino (nome): " + dto.nomePontoDestino());
         
