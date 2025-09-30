@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +41,8 @@ public class MovimentacaoService {
         Movimentacoes movimentacao = new Movimentacoes();
         movimentacao.setMoto(moto);
         movimentacao.setPontoLeitura(ponto);
-        movimentacao.setDataHora(dto.dataHora());
+        // Subtrai 3 horas para ajustar UTC para horário de Brasília
+        movimentacao.setDataHora(dto.dataHora() != null ? dto.dataHora().minusHours(3) : LocalDateTime.now().minusHours(3));
         movimentacoesRepository.save(movimentacao);
     }
 
