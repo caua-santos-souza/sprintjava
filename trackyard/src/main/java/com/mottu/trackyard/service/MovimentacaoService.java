@@ -57,7 +57,7 @@ public class MovimentacaoService {
                 m.getIdMovimentacao(),
                 m.getMoto().getIdMoto(),
                 m.getPontoLeitura().getIdPonto(),
-                m.getDataHora()
+                m.getDataHora().plusHours(3) // Adiciona 3 horas para exibir no horário correto
             ))
             .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, movimentacoes.getTotalElements());
@@ -71,7 +71,7 @@ public class MovimentacaoService {
             movimentacao.getIdMovimentacao(),
             movimentacao.getMoto().getIdMoto(),
             movimentacao.getPontoLeitura().getIdPonto(),
-            movimentacao.getDataHora()
+            movimentacao.getDataHora().plusHours(3) // Adiciona 3 horas para exibir no horário correto
         );
     }
 }
