@@ -1,5 +1,6 @@
 package com.mottu.trackyard.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -24,6 +25,7 @@ public class Movimentacoes {
     private PontosLeitura pontoLeitura;
 
     @Column(name = "data_hora")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS", timezone = "America/Sao_Paulo")
     private LocalDateTime dataHora;
     
     //Getters e settes gerados manualmente pois o lombok não funcionou
