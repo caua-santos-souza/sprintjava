@@ -65,8 +65,21 @@ public class MotoController {
 
     //Método PUT para atualizar moto por placa (para QR Code) com ponto atual
     @PutMapping("/placa/{placa}")
-    public ResponseEntity<MotoComPontoAtualDTO> updateMotoByPlaca(@PathVariable String placa, @Valid @RequestBody MotosDTO dto) {
-        return ResponseEntity.ok(motoService.updateMotoByPlaca(placa, dto));
+    public ResponseEntity<MotoComPontoAtualDTO> updateMotoByPlaca(@PathVariable String placa, @RequestBody MotosDTO dto) {
+        System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa);
+        System.out.println("DEBUG: DTO no controller - idMoto: " + dto.idMoto() + ", modelo: " + dto.modelo() + ", placa: " + dto.placa());
+        
+        MotoComPontoAtualDTO resultado = motoService.updateMotoByPlaca(placa, dto);
+        
+        System.out.println("DEBUG: Controller retornando resultado - modelo: " + resultado.modelo());
+        return ResponseEntity.ok(resultado);
+    }
+
+    //Endpoint de teste para debug
+    @GetMapping("/test/{placa}")
+    public ResponseEntity<String> testEndpoint(@PathVariable String placa) {
+        System.out.println("DEBUG: Test endpoint chamado para placa: " + placa);
+        return ResponseEntity.ok("Test OK para placa: " + placa);
     }
 
     //Método GET para exibir o histórico de movimentações de uma determinada moto através do ID

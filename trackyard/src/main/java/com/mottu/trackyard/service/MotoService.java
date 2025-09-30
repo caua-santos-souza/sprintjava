@@ -86,19 +86,33 @@ public class MotoService {
     //Atualiza uma moto por placa (para QR Code) com ponto atual
     @CacheEvict(value = "motos", allEntries = true)
     public MotoComPontoAtualDTO updateMotoByPlaca(String placa, MotosDTO dto) {
+        System.out.println("DEBUG: Iniciando updateMotoByPlaca para placa: " + placa);
+        System.out.println("DEBUG: DTO recebido - modelo: " + dto.modelo() + ", placa: " + dto.placa());
+        
         Motos moto = motosRepository.findByPlaca(placa);
         if (moto == null) {
+            System.out.println("DEBUG: Moto não encontrada com placa: " + placa);
             throw new RuntimeException("Moto não encontrada com a placa: " + placa);
         }
         
+        System.out.println("DEBUG: Moto encontrada - ID: " + moto.getIdMoto() + ", modelo atual: " + moto.getModelo());
+        
         // Atualiza apenas o modelo (placa não pode ser alterada)
+        String modeloAnterior = moto.getModelo();
         moto.setModelo(dto.modelo());
-        motosRepository.save(moto);
+        System.out.println("DEBUG: Modelo alterado de '" + modeloAnterior + "' para '" + dto.modelo() + "'");
+        
+        Motos motoSalva = motosRepository.save(moto);
+        System.out.println("DEBUG: Moto salva - modelo após save: " + motoSalva.getModelo());
         
         // Buscar o ponto atual após a atualização
         String pontoAtual = obterPontoAtual(moto.getIdMoto());
+        System.out.println("DEBUG: Ponto atual: " + pontoAtual);
         
-        return new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), pontoAtual);
+        MotoComPontoAtualDTO resultado = new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), pontoAtual);
+        System.out.println("DEBUG: Resultado final - modelo: " + resultado.modelo());
+        
+        return resultado;
     }
 
     //Método auxiliar para obter o ponto atual da moto

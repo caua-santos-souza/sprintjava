@@ -8,16 +8,25 @@ INSERT INTO Patios (id_patio, nome, telefone, endereco) VALUES
 (3, 'Pátio Sul', '(11)98231-3429', 'Rua Sul, 789');
 
 -- Inserir dados de exemplo para Motos (apenas modelos Pop, Sport, E)
-INSERT INTO Motos (id_moto, placa, modelo) VALUES 
-('MOTO001', 'ABC-1234', 'Pop'),
-('MOTO002', 'DEF-5678', 'Sport'),
-('MOTO003', 'GHI-9012', 'E'),
-('MOTO004', 'JKL-3456', 'Pop'),
-('MOTO005', 'MNO-3344', 'Sport'),
-('MOTO006', 'PQR-5566', 'E'),
-('MOTO007', 'STU-7788', 'Pop'),
-('MOTO008', 'VWX-9999', 'Sport'),
-('MOTO009', 'YZA-1011', 'E');
+-- Só insere se não existir
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO001', 'ABC-1234', 'Pop' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO001');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO002', 'DEF-5678', 'Sport' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO002');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO003', 'GHI-9012', 'E' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO003');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO004', 'JKL-3456', 'Pop' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO004');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO005', 'MNO-3344', 'Sport' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO005');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO006', 'PQR-5566', 'E' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO006');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO007', 'STU-7788', 'Pop' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO007');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO008', 'VWX-9999', 'Sport' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO008');
+INSERT INTO Motos (id_moto, placa, modelo) 
+SELECT 'MOTO009', 'YZA-1011', 'E' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO009');
 
 -- Inserir dados de exemplo para Pontos de Leitura (áreas do pátio)
 INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) VALUES 
