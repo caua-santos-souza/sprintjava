@@ -9,8 +9,8 @@ APP_CONTAINER=aci-app-cp4-rm${RM}
 APP_IMG=$ACR.azurecr.io/appcp4:${TAG}
 
 # Configurações do Oracle (credenciais da faculdade)
-ORACLE_USER=${ORACLE_USER:-"rm559093"}
-ORACLE_PASSWORD=${ORACLE_PASSWORD:-"fiap"}
+ORACLE_USER=${ORACLE_USER:-"SEU_USIUARIO_AQUI"}
+ORACLE_PASSWORD=${ORACLE_PASSWORD:-"SUA_SENHA_AQUI"}
 ORACLE_HOST=${ORACLE_HOST:-"oracle.fiap.com.br"}
 ORACLE_PORT=${ORACLE_PORT:-"1521"}
 ORACLE_SID=${ORACLE_SID:-"orcl"}

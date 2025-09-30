@@ -6,9 +6,18 @@
 
 ---
 
-## 🗺️ Diagrama de Arquitetura
+## Links Da API
 
-![Diagrama detalhado da solução](images/diagrama_detalhado.png)
+### A API já está rodando neste link:
+
+   ```bash
+   http://135.234.198.218:8080/api/
+   ```
+### ou neste link reserva:
+
+   ```bash
+   http://52.226.97.150:8080/api/
+   ```
 
 ---
 
@@ -37,8 +46,8 @@
 3. **Configure suas credenciais Oracle (opcional):**
    ```bash
    # Opção 1: Variáveis de ambiente
-   export ORACLE_USER="rm559093"
-   export ORACLE_PASSWORD="fiap"
+   export ORACLE_USER="SEU_USUARIO_AQUI"
+   export ORACLE_PASSWORD="SUA_SENHA_AQUI"
    
    # Opção 2: Editar o arquivo deploy.sh (linhas 12-13)
    ```
@@ -86,7 +95,7 @@ Se preferir executar cada etapa manualmente:
    ```bash
    cd ..
    $password = az acr credential show --name acrcp4rm559093 --query "passwords[0].value" -o tsv
-   az container create --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --image acrcp4rm559093.azurecr.io/appcp4:latest --registry-login-server acrcp4rm559093.azurecr.io --registry-username acrcp4rm559093 --registry-password $password --cpu 1 --memory 2 --os-type Linux --ports 8080 --ip-address public --restart-policy OnFailure --environment-variables DB_USER=rm559093 DB_PASSWORD=fiap ORACLE_HOST=oracle.fiap.com.br ORACLE_PORT=1521 ORACLE_SID=orcl
+   az container create --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --image acrcp4rm559093.azurecr.io/appcp4:latest --registry-login-server acrcp4rm559093.azurecr.io --registry-username acrcp4rm559093 --registry-password $password --cpu 1 --memory 2 --os-type Linux --ports 8080 --ip-address public --restart-policy OnFailure --environment-variables DB_USER=SEU_USUARIO_AQUI DB_PASSWORD=SUA_SENHA_AQUI ORACLE_HOST=oracle.fiap.com.br ORACLE_PORT=1521 ORACLE_SID=orcl
    ```
 
 ### 🌐 Acessando a Aplicação
@@ -150,16 +159,6 @@ A aplicação está configurada para usar:
 - Use ferramentas como DBeaver, SQL Developer ou Oracle SQL Developer para conectar ao Oracle.
 - As credenciais são configuradas no script `deploy.sh` ou via variáveis de ambiente.
 - Para desenvolvimento local, a aplicação usa H2 (profile padrão).
-
----
-
-## 🖼️ Prints de Funcionamento
-
-![Tela da aplicação rodando 2](images/print2.png)
-![Tela da aplicação rodando 3](images/print3.png)
-![Tela da aplicação rodando 4](images/print4.png)
-![Tela da aplicação rodando 5](images/print5.png)
-![Tela da aplicação rodando 6](images/print6.png)
 
 ---
 
