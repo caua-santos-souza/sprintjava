@@ -1,27 +1,34 @@
-# Use a imagem oficial do OpenJDK 17
-FROM openjdk:17-jdk-slim
+# Dockerfile multistage para aplicação Spring Boot com Oracle
 
-# Definir diretório de trabalho
+# Etapa 1: Build
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Runtime
+FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 
-# Copiar arquivos de configuração do Maven
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
+# Cria usuário não-root
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 
-# Copiar código fonte
-COPY src src
+# Copia jar do build
+COPY --from=build /app/target/trackyard-0.0.1-SNAPSHOT.jar app.jar
 
-# Dar permissão de execução para o wrapper do Maven
-RUN chmod +x mvnw
-
-# Construir a aplicação
-RUN ./mvnw clean package -DskipTests
-
-# H2 em memória não precisa de diretório persistente
-
-# Expor porta 8080
+# Porta exposta
 EXPOSE 8080
 
-# Comando para iniciar a aplicação
-CMD ["java", "-Dspring.profiles.active=render", "-jar", "target/trackyard-0.0.1-SNAPSHOT.jar"]
+# Variáveis de ambiente para Oracle (valores default)
+ENV DB_USER=rm559093 \
+    DB_PASSWORD=fiap \
+    ORACLE_HOST=oracle.fiap.com.br \
+    ORACLE_PORT=1521 \
+    ORACLE_SID=orcl
+
+# Executa como não-root
+USER appuser
+
+# Entrypoint com profile Azure
+ENTRYPOINT ["java", "-Dspring.profiles.active=azure", "-jar", "app.jar"]

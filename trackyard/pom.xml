@@ -64,6 +64,19 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
+        <!-- PostgreSQL Database Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- Oracle Database Driver -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- H2 para desenvolvimento local (opcional) -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>

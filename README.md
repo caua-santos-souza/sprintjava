@@ -1,209 +1,180 @@
-# TrackYard - Sistema de Gerenciamento de Pátios
+## 👥 Identificação do Grupo
 
-**TrackYard** é uma aplicação Java desenvolvida com o objetivo de gerenciar a organização das motos da Mottu dentro dos pátios, ajudando a evitar a perda inesperada de motos.
+- Cauã Dos Santos Souza (RM559093)
+- Luigi Berzaghi Hernandes Sespedes (RM555516)
+- Guilherme Pelissari Feitosa (RM558445)
 
-## 🚀 Funcionalidades
+---
 
-- **Gerenciamento de pátios** - CRUD completo de pátios
-- **Gerenciamento de motos** - CRUD completo de motos com validações
-- **Pontos de leitura** - Áreas específicas dentro dos pátios (8 tipos pré-definidos)
-- **Movimentações** - Registro de onde cada moto está localizada
-- **API REST** - Endpoints para integração com frontend
-- **Validações** - Garantia de consistência dos dados
-- **Deploy no Render** - Aplicação disponível na nuvem
+## 🗺️ Diagrama de Arquitetura
 
-## 🌐 API em Produção
+![Diagrama detalhado da solução](images/diagrama_detalhado.png)
 
-A aplicação está disponível em: **https://trackyard.onrender.com**
+---
 
-### 🔗 Endpoints Principais:
-- **Listar pátios**: `GET /api/patios`
-- **Motos por pátio**: `GET /api/patios/{id}/motos`
-- **Valores válidos**: `GET /api/enums/modelos-motos` e `GET /api/enums/pontos-leitura`
+## 🚀 Deploy na Nuvem Azure - Tutorial Completo
 
-## Pré-requisitos
+### 📋 Pré-requisitos
+- Azure CLI instalado
+- Docker instalado
+- Git Bash (Windows) ou terminal Linux/Mac
+- Conta Azure ativa
+- Credenciais Oracle da faculdade
 
-- **Java 17.** ou superior.
-- **Maven**.
-- Uma IDE.
-- **Postman** ou outro cliente HTTP para testar os endpoints.
+### 🔧 Configuração Inicial
 
-## Configuração e Execução
-
-### 1. Clonar o Repositório
-
-Clone o projeto para sua máquina local:
-
-```bash
-git clone https://github.com/LuigiBerzaghi/Sprint1Java.git
-cd Sprint1Java/trackyard
-```
-
-### 2. Build e Execução
-
-Compile e execute a aplicação usando Maven:
-
-```bash
-mvn clean install
-mvn spring-boot:run
-```
-
-### 3. Acessar o Banco H2
-
-O projeto usa o banco de dados H2 em memória. Acesse em:
-
-- URL: `http://localhost:8080/h2-console`
-- JDBC URL: `jdbc:h2:mem:trackyard`
-- Username: `sa`
-- Password: (deixe em branco)
-
-## Estrutura do Projeto
-
-- `com.mottu.trackyard.controller`: Contém os controladores REST.
-- `com.mottu.trackyard.service`: Contém os serviços.
-- `com.mottu.trackyard.entity`: Contém as entidades modelo.
-- `com.mottu.trackyard.repository`: Contém os repositórios JPA.
-- `com.mottu.trackyard.dto`: Contém os DTOs para transferência de dados.
-- `com.mottu.trackyard.exception`: Contém a classe que centraliza o tratamento de exceções.
-
-## 📚 Documentação da API
-
-### 🏢 **Pátios** (`/api/patios`)
-
-| Método | Endpoint | Descrição | Request Body | Response |
-|--------|----------|-----------|--------------|----------|
-| **GET** | `/api/patios` | Lista todos os pátios (paginado) | - | `200 OK` - Lista de pátios |
-| **GET** | `/api/patios/{id}` | Busca pátio por ID | - | `200 OK` - Dados do pátio |
-| **GET** | `/api/patios/{id}/motos` | **🎯 Pátio com motos e pontos** | - | `200 OK` - Pátio + motos + pontos |
-| **POST** | `/api/patios` | Cria novo pátio | `{"idPatio": 1, "nome": "Pátio Central", "telefone": "(11)99999-9999", "endereco": "Rua das Flores, 123"}` | `201 Created` |
-| **PUT** | `/api/patios/{id}` | Atualiza pátio | `{"idPatio": 1, "nome": "Pátio Central", "telefone": "(11)99999-9999", "endereco": "Rua das Flores, 123"}` | `200 OK` |
-| **DELETE** | `/api/patios/{id}` | Deleta pátio | - | `200 OK` - Mensagem de sucesso |
-
-### 🏍️ **Motos** (`/api/motos`)
-
-| Método | Endpoint | Descrição | Request Body | Response |
-|--------|----------|-----------|--------------|----------|
-| **GET** | `/api/motos` | Lista todas as motos (paginado) | - | `200 OK` - Lista de motos |
-| **GET** | `/api/motos/{id}` | Busca moto por ID | - | `200 OK` - Dados da moto |
-| **GET** | `/api/motos/placa/{placa}` | Busca moto por placa com ponto atual | - | `200 OK` - Dados da moto + ponto |
-| **GET** | `/api/motos/{id}/historico` | Histórico de movimentações | - | `200 OK` - Lista de movimentações |
-| **POST** | `/api/motos` | Cria nova moto | `{"idMoto": "MOTO001", "modelo": "Pop", "placa": "ABC-1234"}` | `201 Created` |
-| **PUT** | `/api/motos/{id}` | Atualiza moto por ID | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
-| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (modelo + ponto)** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234", "ponto": "minha mottu"}` | `200 OK` - Dados atualizados + novo ponto |
-| **PUT** | `/api/motos/placa/{placa}/mover` | Move moto para outro ponto (por ID) | `{"idPontoDestino": 2}` | `200 OK` - Moto movida + novo ponto |
-| **PUT** | `/api/motos/placa/{placa}/mover-para` | **🎯 Move moto para outro ponto (por nome)** | `{"nomePontoDestino": "minha mottu"}` | `200 OK` - Moto movida + novo ponto |
-| **DELETE** | `/api/motos/{id}` | Deleta moto | - | `200 OK` - Mensagem de sucesso |
-
-### 📍 **Pontos de Leitura** (`/api/pontos-leitura`)
-
-| Método | Endpoint | Descrição | Request Body | Response |
-|--------|----------|-----------|--------------|----------|
-| **GET** | `/api/pontos-leitura` | Lista pontos (paginado) | - | `200 OK` - Lista de pontos |
-| **GET** | `/api/pontos-leitura/{id}` | Busca ponto por ID | - | `200 OK` - Dados do ponto |
-| **POST** | `/api/pontos-leitura` | Cria novo ponto | `{"idPonto": 1, "idPatio": 1, "nomePonto": "pendência", "descricao": "Área de pendências"}` | `201 Created` |
-| **PUT** | `/api/pontos-leitura/{id}` | Atualiza ponto | `{"idPonto": 1, "idPatio": 1, "nomePonto": "reparos simples", "descricao": "Área de reparos"}` | `200 OK` |
-| **DELETE** | `/api/pontos-leitura/{id}` | Deleta ponto | - | `200 OK` - Mensagem de sucesso |
-
-### 🚛 **Movimentações** (`/api/movimentacoes`)
-
-| Método | Endpoint | Descrição | Request Body | Response |
-|--------|----------|-----------|--------------|----------|
-| **GET** | `/api/movimentacoes/{id}` | Busca movimentação por ID | - | `200 OK` - Dados da movimentação |
-| **POST** | `/api/movimentacoes` | Registra movimentação | `{"idMoto": "MOTO001", "idPonto": 1}` | `201 Created` |
-
-### 🔧 **Enums/Valores Válidos** (`/api/enums`)
-
-| Método | Endpoint | Descrição | Response |
-|--------|----------|-----------|----------|
-| **GET** | `/api/enums/modelos-motos` | Lista modelos válidos | `["Pop", "Sport", "E"]` |
-| **GET** | `/api/enums/pontos-leitura` | Lista pontos válidos | `["defeito motor", "dano estrutural", "minha mottu", "agendamento", "pendência", "reparos simples", "para alugar", "sem placa"]` |
-
-## 🎯 **Endpoints Principais para Frontend**
-
-- **Listar pátios**: `GET /api/patios`
-- **Motos por pátio**: `GET /api/patios/{id}/motos`
-- **Buscar moto por placa**: `GET /api/motos/placa/{placa}`
-- **Atualizar moto (modelo + ponto)**: `PUT /api/motos/placa/{placa}` (para QR Code)
-- **Valores válidos**: `GET /api/enums/modelos-motos` e `GET /api/enums/pontos-leitura`
-
-## ⚠️ **Validações**
-
-- **Modelos de motos**: Apenas `Pop`, `Sport`, `E`
-- **Pontos de leitura**: Apenas os 8 tipos pré-definidos
-- **Campos obrigatórios**: Todos os campos marcados com `@NotBlank` ou `@NotNull`
-
-## 🧪 **Testes e Validação**
-
-### **Teste Online (Recomendado)**
-A API está disponível em produção, você pode testar diretamente:
-
-```bash
-# Listar pátios
-curl https://trackyard.onrender.com/api/patios
-
-# Buscar motos do pátio 1
-curl https://trackyard.onrender.com/api/patios/1/motos
-
-# Obter valores válidos
-curl https://trackyard.onrender.com/api/enums/modelos-motos
-curl https://trackyard.onrender.com/api/enums/pontos-leitura
-```
-
-### **Teste Local**
-Para testar localmente:
-
-1. **Execute a aplicação**:
+1. **Clone o repositório:**
    ```bash
-   mvn spring-boot:run
+   git clone <url-do-repo>
+   cd Sprint1Java
    ```
 
-2. **Acesse o H2 Console**:
-   - URL: `http://localhost:8080/h2-console`
-   - JDBC URL: `jdbc:h2:mem:trackyard`
-   - Username: `sa`
-   - Password: (deixe em branco)
+2. **Faça login no Azure:**
+   ```bash
+   az login
+   ```
 
-3. **Teste com Postman**:
-   - Base URL: `http://localhost:8080`
-   - Coleção disponível: [TrackYard API Tests](https://bold-zodiac-707210.postman.co/workspace/Personal-Workspace~4701d561-f092-46f6-a63c-0560d2fd1507/collection/39387306-06cd5d63-7cab-4aaf-9c69-e5983de04042?action=share&creator=39387306)
+3. **Configure suas credenciais Oracle (opcional):**
+   ```bash
+   # Opção 1: Variáveis de ambiente
+   export ORACLE_USER="rm559093"
+   export ORACLE_PASSWORD="fiap"
+   
+   # Opção 2: Editar o arquivo deploy.sh (linhas 12-13)
+   ```
 
-## 🚀 **Exemplos de Uso**
+### 🚀 Deploy Automático (Recomendado)
 
-### Buscar moto por placa:
+**Execute um único comando que faz tudo automaticamente:**
+
 ```bash
-GET /api/motos/placa/ABC-1234
+./deploy.sh
 ```
 
-### Atualizar moto (modelo + ponto):
+Este script executa automaticamente:
+- ✅ Verifica login no Azure
+- ✅ Cria Resource Group e ACR
+- ✅ Faz build da aplicação Docker
+- ✅ Faz push para Azure Container Registry
+- ✅ Deploy da aplicação na Azure
+- ✅ Testa se está funcionando
+- ✅ Mostra URL e rotas disponíveis
+
+### 🔧 Deploy Manual (Passo a Passo)
+
+Se preferir executar cada etapa manualmente:
+
+1. **Criar infraestrutura:**
+   ```bash
+   ./infra.sh
+   ```
+
+2. **Build da aplicação:**
+   ```bash
+   cd trackyard
+   docker build -t appcp4:latest .
+   ```
+
+3. **Push para ACR:**
+   ```bash
+   az acr login --name acrcp4rm559093
+   docker tag appcp4:latest acrcp4rm559093.azurecr.io/appcp4:latest
+   docker push acrcp4rm559093.azurecr.io/appcp4:latest
+   ```
+
+4. **Deploy da aplicação:**
+   ```bash
+   cd ..
+   $password = az acr credential show --name acrcp4rm559093 --query "passwords[0].value" -o tsv
+   az container create --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --image acrcp4rm559093.azurecr.io/appcp4:latest --registry-login-server acrcp4rm559093.azurecr.io --registry-username acrcp4rm559093 --registry-password $password --cpu 1 --memory 2 --os-type Linux --ports 8080 --ip-address public --restart-policy OnFailure --environment-variables DB_USER=rm559093 DB_PASSWORD=fiap ORACLE_HOST=oracle.fiap.com.br ORACLE_PORT=1521 ORACLE_SID=orcl
+   ```
+
+### 🌐 Acessando a Aplicação
+
+Após o deploy, você receberá um IP público. Acesse:
+
+- **URL Base**: `http://SEU_IP:8080`
+- **API Pátios**: `http://SEU_IP:8080/api/patios`
+- **API Motos**: `http://SEU_IP:8080/api/motos`
+- **API Movimentações**: `http://SEU_IP:8080/api/movimentacoes`
+- **API Pontos de Leitura**: `http://SEU_IP:8080/api/pontos-leitura`
+- **API Enums**: `http://SEU_IP:8080/api/enums`
+
+### 🔍 Comandos Úteis
+
 ```bash
-PUT /api/motos/placa/ABC-1234
-{
-  "idMoto": "MOTO001",
-  "modelo": "Sport",
-  "placa": "ABC-1234",
-  "ponto": "minha mottu"
-}
+# Ver IP da aplicação
+az container show --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --query "ipAddress.ip" -o tsv
+
+# Ver logs da aplicação
+az container logs --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093
+
+# Ver status do container
+az container show --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --query "containers[0].instanceView.currentState"
+
+# Deletar aplicação
+az container delete --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093 --yes
+
+# Deletar todos os recursos
+az group delete --name rg-cp4-rm559093 --yes --no-wait
 ```
 
-### Mover moto para outro ponto:
+### 🗄️ Configuração do Banco
+
+A aplicação está configurada para usar:
+- **Oracle Database**: oracle.fiap.com.br:1521/orcl
+- **Usuário**: rm559093
+- **Senha**: fiap
+- **Profile**: azure (Oracle)
+
+### ⚠️ Troubleshooting
+
+**Problema**: Erro de conexão Oracle
+- Verifique se as credenciais estão corretas
+- Confirme se o Oracle da faculdade está acessível
+
+**Problema**: Container não inicia
+- Verifique os logs: `az container logs --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093`
+- Confirme se o build foi bem-sucedido
+
+**Problema**: API não responde
+- Aguarde alguns minutos para inicialização
+- Verifique se o IP está correto
+- Teste com: `curl http://SEU_IP:8080/api/patios`
+
+---
+
+## 🧪 Como Validar o Banco
+
+- A aplicação conecta ao Oracle da faculdade (oracle.fiap.com.br:1521/orcl).
+- Use ferramentas como DBeaver, SQL Developer ou Oracle SQL Developer para conectar ao Oracle.
+- As credenciais são configuradas no script `deploy.sh` ou via variáveis de ambiente.
+- Para desenvolvimento local, a aplicação usa H2 (profile padrão).
+
+---
+
+## 🖼️ Prints de Funcionamento
+
+![Tela da aplicação rodando 2](images/print2.png)
+![Tela da aplicação rodando 3](images/print3.png)
+![Tela da aplicação rodando 4](images/print4.png)
+![Tela da aplicação rodando 5](images/print5.png)
+![Tela da aplicação rodando 6](images/print6.png)
+
+---
+
+## 🧹 Limpeza dos Recursos
+
+Para evitar custos, exclua tudo ao final:
 ```bash
-PUT /api/motos/placa/ABC-1234/mover-para
-{
-  "nomePontoDestino": "pendência"
-}
+az group delete --name rg-cp4-rm559093 --yes --no-wait
 ```
 
-## 🚀 **Deploy no Render**
+---
 
-A aplicação está configurada para deploy automático no Render:
+## ℹ️ Observações
 
-- **URL de Produção**: `https://trackyard.onrender.com`
-- **Banco de Dados**: H2 em memória (dados recarregados a cada startup)
-- **Configuração**: Docker com Java 17
-- **Plano**: Gratuito (aplicação "dorme" após 15 min de inatividade)
+- Todos os comandos devem ser executados via terminal.
+- O Dockerfile, scripts e código estão nas pastas correspondentes.
 
-## Integrantes
-
-- RM555516 - Luigi Berzaghi Hernandes Sespedes
-- RM559093 - Cauã Dos Santos Souza
-- RM558445 - Guilherme Pelissari Feitosa
+---
