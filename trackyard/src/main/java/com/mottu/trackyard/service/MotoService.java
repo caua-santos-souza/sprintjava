@@ -2,16 +2,21 @@ package com.mottu.trackyard.service;
 
 import com.mottu.trackyard.dto.MotosDTO;
 import com.mottu.trackyard.dto.MotoComPontoAtualDTO;
+import com.mottu.trackyard.dto.MoverMotoDTO;
+import com.mottu.trackyard.dto.MoverMotoSimplesDTO;
 import com.mottu.trackyard.entity.Motos;
 import com.mottu.trackyard.entity.Movimentacoes;
+import com.mottu.trackyard.entity.PontosLeitura;
 import com.mottu.trackyard.repository.MotosRepository;
 import com.mottu.trackyard.repository.MovimentacoesRepository;
+import com.mottu.trackyard.repository.PontosLeituraRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,10 +24,12 @@ public class MotoService {
 
     private final MotosRepository motosRepository;
     private final MovimentacoesRepository movimentacoesRepository;
+    private final PontosLeituraRepository pontosLeituraRepository;
 
-    public MotoService(MotosRepository motosRepository, MovimentacoesRepository movimentacoesRepository) {
+    public MotoService(MotosRepository motosRepository, MovimentacoesRepository movimentacoesRepository, PontosLeituraRepository pontosLeituraRepository) {
         this.motosRepository = motosRepository;
         this.movimentacoesRepository = movimentacoesRepository;
+        this.pontosLeituraRepository = pontosLeituraRepository;
     }
 
     public MotosDTO createMoto(MotosDTO dto) {
@@ -87,7 +94,7 @@ public class MotoService {
     @CacheEvict(value = "motos", allEntries = true)
     public MotoComPontoAtualDTO updateMotoByPlaca(String placa, MotosDTO dto) {
         System.out.println("DEBUG: Iniciando updateMotoByPlaca para placa: " + placa);
-        System.out.println("DEBUG: DTO recebido - modelo: " + dto.modelo() + ", placa: " + dto.placa());
+        System.out.println("DEBUG: DTO recebido - modelo: " + dto.modelo() + ", placa: " + dto.placa() + ", ponto: " + dto.ponto());
         
         Motos moto = motosRepository.findByPlaca(placa);
         if (moto == null) {
@@ -105,12 +112,40 @@ public class MotoService {
         Motos motoSalva = motosRepository.save(moto);
         System.out.println("DEBUG: Moto salva - modelo após save: " + motoSalva.getModelo());
         
-        // Buscar o ponto atual após a atualização
+        // Verificar se o ponto mudou
         String pontoAtual = obterPontoAtual(moto.getIdMoto());
         System.out.println("DEBUG: Ponto atual: " + pontoAtual);
         
+        if (dto.ponto() != null && !dto.ponto().equals(pontoAtual)) {
+            System.out.println("DEBUG: Ponto alterado de '" + pontoAtual + "' para '" + dto.ponto() + "'");
+            
+            // Buscar o ponto de destino pelo nome
+            List<PontosLeitura> pontosComNome = pontosLeituraRepository.findByNomePonto(dto.ponto());
+            if (pontosComNome.isEmpty()) {
+                System.out.println("DEBUG: Ponto não encontrado: " + dto.ponto());
+                throw new RuntimeException("Ponto '" + dto.ponto() + "' não encontrado");
+            }
+            
+            // Se houver múltiplos pontos com o mesmo nome, pegar o primeiro
+            PontosLeitura pontoDestino = pontosComNome.get(0);
+            
+            // Criar nova movimentação
+            Movimentacoes movimentacao = new Movimentacoes();
+            movimentacao.setMoto(moto);
+            movimentacao.setPontoLeitura(pontoDestino);
+            movimentacao.setDataHora(LocalDateTime.now());
+            
+            movimentacoesRepository.save(movimentacao);
+            System.out.println("DEBUG: Movimentação registrada para ponto: " + dto.ponto());
+            
+            // Atualizar ponto atual
+            pontoAtual = dto.ponto();
+        } else {
+            System.out.println("DEBUG: Ponto não alterado");
+        }
+        
         MotoComPontoAtualDTO resultado = new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), pontoAtual);
-        System.out.println("DEBUG: Resultado final - modelo: " + resultado.modelo());
+        System.out.println("DEBUG: Resultado final - modelo: " + resultado.modelo() + ", ponto: " + resultado.ponto());
         
         return resultado;
     }
@@ -128,5 +163,89 @@ public class MotoService {
             .orElse(null);
             
         return ultimaMovimentacao != null ? ultimaMovimentacao.getPontoLeitura().getNomePonto() : "Sem movimentação";
+    }
+
+    //Move uma moto para outro ponto (para QR Code)
+    @CacheEvict(value = "motos", allEntries = true)
+    public MotoComPontoAtualDTO moverMotoPorPlaca(String placa, MoverMotoDTO dto) {
+        System.out.println("DEBUG: Iniciando moverMotoPorPlaca para placa: " + placa);
+        System.out.println("DEBUG: Ponto destino: " + dto.idPontoDestino());
+        
+        // Buscar a moto pela placa
+        Motos moto = motosRepository.findByPlaca(placa);
+        if (moto == null) {
+            System.out.println("DEBUG: Moto não encontrada com placa: " + placa);
+            throw new RuntimeException("Moto não encontrada com a placa: " + placa);
+        }
+        
+        // Buscar o ponto de destino
+        PontosLeitura pontoDestino = pontosLeituraRepository.findById(dto.idPontoDestino())
+            .orElseThrow(() -> new RuntimeException("Ponto de destino não encontrado"));
+        
+        System.out.println("DEBUG: Moto encontrada - ID: " + moto.getIdMoto());
+        System.out.println("DEBUG: Ponto destino: " + pontoDestino.getNomePonto());
+        
+        // Criar nova movimentação
+        Movimentacoes movimentacao = new Movimentacoes();
+        movimentacao.setMoto(moto);
+        movimentacao.setPontoLeitura(pontoDestino);
+        movimentacao.setDataHora(LocalDateTime.now());
+        
+        movimentacoesRepository.save(movimentacao);
+        System.out.println("DEBUG: Movimentação registrada");
+        
+        // Retornar moto com novo ponto
+        String novoPonto = pontoDestino.getNomePonto();
+        System.out.println("DEBUG: Novo ponto: " + novoPonto);
+        
+        MotoComPontoAtualDTO resultado = new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), novoPonto);
+        System.out.println("DEBUG: Resultado final - ponto: " + resultado.ponto());
+        
+        return resultado;
+    }
+
+    //Move uma moto para outro ponto usando nome do ponto (versão simples)
+    @CacheEvict(value = "motos", allEntries = true)
+    public MotoComPontoAtualDTO moverMotoPorPlacaSimples(String placa, MoverMotoSimplesDTO dto) {
+        System.out.println("DEBUG: Iniciando moverMotoPorPlacaSimples para placa: " + placa);
+        System.out.println("DEBUG: Ponto destino (nome): " + dto.nomePontoDestino());
+        
+        // Buscar a moto pela placa
+        Motos moto = motosRepository.findByPlaca(placa);
+        if (moto == null) {
+            System.out.println("DEBUG: Moto não encontrada com placa: " + placa);
+            throw new RuntimeException("Moto não encontrada com a placa: " + placa);
+        }
+        
+        // Buscar o ponto de destino pelo nome
+        List<PontosLeitura> pontosComNome = pontosLeituraRepository.findByNomePonto(dto.nomePontoDestino());
+        if (pontosComNome.isEmpty()) {
+            System.out.println("DEBUG: Ponto não encontrado: " + dto.nomePontoDestino());
+            throw new RuntimeException("Ponto '" + dto.nomePontoDestino() + "' não encontrado");
+        }
+        
+        // Se houver múltiplos pontos com o mesmo nome, pegar o primeiro
+        PontosLeitura pontoDestino = pontosComNome.get(0);
+        
+        System.out.println("DEBUG: Moto encontrada - ID: " + moto.getIdMoto());
+        System.out.println("DEBUG: Ponto destino: " + pontoDestino.getNomePonto() + " (ID: " + pontoDestino.getIdPonto() + ")");
+        
+        // Criar nova movimentação
+        Movimentacoes movimentacao = new Movimentacoes();
+        movimentacao.setMoto(moto);
+        movimentacao.setPontoLeitura(pontoDestino);
+        movimentacao.setDataHora(LocalDateTime.now());
+        
+        movimentacoesRepository.save(movimentacao);
+        System.out.println("DEBUG: Movimentação registrada");
+        
+        // Retornar moto com novo ponto
+        String novoPonto = pontoDestino.getNomePonto();
+        System.out.println("DEBUG: Novo ponto: " + novoPonto);
+        
+        MotoComPontoAtualDTO resultado = new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), novoPonto);
+        System.out.println("DEBUG: Resultado final - ponto: " + resultado.ponto());
+        
+        return resultado;
     }
 }

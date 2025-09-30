@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface PontosLeituraRepository extends JpaRepository<PontosLeitura, Long> {
     List<PontosLeitura> findByPatioIdPatio(Long idPatio);
+    List<PontosLeitura> findByNomePonto(String nomePonto);
 }

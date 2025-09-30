@@ -89,7 +89,9 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 | **GET** | `/api/motos/{id}/historico` | Histórico de movimentações | - | `200 OK` - Lista de movimentações |
 | **POST** | `/api/motos` | Cria nova moto | `{"idMoto": "MOTO001", "modelo": "Pop", "placa": "ABC-1234"}` | `201 Created` |
 | **PUT** | `/api/motos/{id}` | Atualiza moto por ID | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
-| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (QR Code) com ponto atual** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` - Dados atualizados + ponto |
+| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (modelo + ponto)** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234", "ponto": "minha mottu"}` | `200 OK` - Dados atualizados + novo ponto |
+| **PUT** | `/api/motos/placa/{placa}/mover` | Move moto para outro ponto (por ID) | `{"idPontoDestino": 2}` | `200 OK` - Moto movida + novo ponto |
+| **PUT** | `/api/motos/placa/{placa}/mover-para` | **🎯 Move moto para outro ponto (por nome)** | `{"nomePontoDestino": "minha mottu"}` | `200 OK` - Moto movida + novo ponto |
 | **DELETE** | `/api/motos/{id}` | Deleta moto | - | `200 OK` - Mensagem de sucesso |
 
 ### 📍 **Pontos de Leitura** (`/api/pontos-leitura`)
@@ -121,7 +123,7 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 - **Listar pátios**: `GET /api/patios`
 - **Motos por pátio**: `GET /api/patios/{id}/motos`
 - **Buscar moto por placa**: `GET /api/motos/placa/{placa}`
-- **Atualizar moto por placa**: `PUT /api/motos/placa/{placa}` (para QR Code)
+- **Atualizar moto (modelo + ponto)**: `PUT /api/motos/placa/{placa}` (para QR Code)
 - **Valores válidos**: `GET /api/enums/modelos-motos` e `GET /api/enums/pontos-leitura`
 
 ## ⚠️ **Validações**
@@ -164,6 +166,32 @@ Para testar localmente:
 3. **Teste com Postman**:
    - Base URL: `http://localhost:8080`
    - Coleção disponível: [TrackYard API Tests](https://bold-zodiac-707210.postman.co/workspace/Personal-Workspace~4701d561-f092-46f6-a63c-0560d2fd1507/collection/39387306-06cd5d63-7cab-4aaf-9c69-e5983de04042?action=share&creator=39387306)
+
+## 🚀 **Exemplos de Uso**
+
+### Buscar moto por placa:
+```bash
+GET /api/motos/placa/ABC-1234
+```
+
+### Atualizar moto (modelo + ponto):
+```bash
+PUT /api/motos/placa/ABC-1234
+{
+  "idMoto": "MOTO001",
+  "modelo": "Sport",
+  "placa": "ABC-1234",
+  "ponto": "minha mottu"
+}
+```
+
+### Mover moto para outro ponto:
+```bash
+PUT /api/motos/placa/ABC-1234/mover-para
+{
+  "nomePontoDestino": "pendência"
+}
+```
 
 ## 🚀 **Deploy no Render**
 

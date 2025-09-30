@@ -2,6 +2,8 @@ package com.mottu.trackyard.controller;
 
 import com.mottu.trackyard.dto.MotosDTO;
 import com.mottu.trackyard.dto.MotoComPontoAtualDTO;
+import com.mottu.trackyard.dto.MoverMotoDTO;
+import com.mottu.trackyard.dto.MoverMotoSimplesDTO;
 import com.mottu.trackyard.dto.MovimentacoesDTO;
 import com.mottu.trackyard.service.MotoService;
 import com.mottu.trackyard.service.MovimentacaoService;
@@ -65,13 +67,13 @@ public class MotoController {
 
     //Método PUT para atualizar moto por placa (para QR Code) com ponto atual
     @PutMapping("/placa/{placa}")
-    public ResponseEntity<MotoComPontoAtualDTO> updateMotoByPlaca(@PathVariable String placa, @RequestBody MotosDTO dto) {
+    public ResponseEntity<MotoComPontoAtualDTO> updateMotoByPlaca(@PathVariable String placa, @RequestBody @Valid MotosDTO dto) {
         System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa);
-        System.out.println("DEBUG: DTO no controller - idMoto: " + dto.idMoto() + ", modelo: " + dto.modelo() + ", placa: " + dto.placa());
+        System.out.println("DEBUG: DTO no controller - idMoto: " + dto.idMoto() + ", modelo: " + dto.modelo() + ", placa: " + dto.placa() + ", ponto: " + dto.ponto());
         
         MotoComPontoAtualDTO resultado = motoService.updateMotoByPlaca(placa, dto);
         
-        System.out.println("DEBUG: Controller retornando resultado - modelo: " + resultado.modelo());
+        System.out.println("DEBUG: Controller retornando resultado - modelo: " + resultado.modelo() + ", ponto: " + resultado.ponto());
         return ResponseEntity.ok(resultado);
     }
 
@@ -80,6 +82,30 @@ public class MotoController {
     public ResponseEntity<String> testEndpoint(@PathVariable String placa) {
         System.out.println("DEBUG: Test endpoint chamado para placa: " + placa);
         return ResponseEntity.ok("Test OK para placa: " + placa);
+    }
+
+    //Mover moto para outro ponto por placa (para QR Code)
+    @PutMapping("/placa/{placa}/mover")
+    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlaca(@PathVariable String placa, @RequestBody MoverMotoDTO dto) {
+        System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa + "/mover");
+        System.out.println("DEBUG: Ponto destino: " + dto.idPontoDestino());
+        
+        MotoComPontoAtualDTO resultado = motoService.moverMotoPorPlaca(placa, dto);
+        
+        System.out.println("DEBUG: Controller retornando resultado - ponto: " + resultado.ponto());
+        return ResponseEntity.ok(resultado);
+    }
+
+    //Mover moto para outro ponto usando nome do ponto (versão simples)
+    @PutMapping("/placa/{placa}/mover-para")
+    public ResponseEntity<MotoComPontoAtualDTO> moverMotoPorPlacaSimples(@PathVariable String placa, @RequestBody MoverMotoSimplesDTO dto) {
+        System.out.println("DEBUG: Controller recebeu PUT /placa/" + placa + "/mover-para");
+        System.out.println("DEBUG: Ponto destino (nome): " + dto.nomePontoDestino());
+        
+        MotoComPontoAtualDTO resultado = motoService.moverMotoPorPlacaSimples(placa, dto);
+        
+        System.out.println("DEBUG: Controller retornando resultado - ponto: " + resultado.ponto());
+        return ResponseEntity.ok(resultado);
     }
 
     //Método GET para exibir o histórico de movimentações de uma determinada moto através do ID

@@ -1,6 +1,7 @@
 package com.mottu.trackyard.dto;
 
 import com.mottu.trackyard.validation.ValidModeloMoto;
+import com.mottu.trackyard.validation.ValidPontoLeitura;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
@@ -15,5 +16,8 @@ public record MotosDTO(
 
     @NotBlank(message = "Placa é obrigatória")
     @Size(max = 10, message = "Placa deve ter no máximo 10 caracteres")
-    String placa
+    String placa,
+
+    @ValidPontoLeitura
+    String ponto
 ) {}
