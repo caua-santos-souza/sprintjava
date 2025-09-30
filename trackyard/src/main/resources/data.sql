@@ -30,7 +30,7 @@ SELECT 'MOTO008', 'VWX-9999', 'Sport' WHERE NOT EXISTS (SELECT 1 FROM Motos WHER
 INSERT INTO Motos (id_moto, placa, modelo) 
 SELECT 'MOTO009', 'YZA-1011', 'E' WHERE NOT EXISTS (SELECT 1 FROM Motos WHERE id_moto = 'MOTO009');
 
--- Inserir dados de exemplo para Pontos de Leitura (áreas do pátio)
+-- Inserir dados de exemplo para Pontos de Leitura (apenas no Pátio Central)
 INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
 SELECT 1, 1, 'defeito motor', 'Área de motos com defeito no motor' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 1);
 INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
@@ -47,38 +47,6 @@ INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao)
 SELECT 7, 1, 'para alugar', 'Área de motos disponíveis para aluguel' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 7);
 INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
 SELECT 8, 1, 'sem placa', 'Área de motos sem placa' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 8);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 9, 2, 'defeito motor', 'Área de motos com defeito no motor' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 9);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 10, 2, 'dano estrutural', 'Área de motos com dano estrutural' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 10);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 11, 2, 'minha mottu', 'Área de motos da Mottu' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 11);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 12, 2, 'agendamento', 'Área de motos aguardando agendamento' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 12);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 13, 2, 'pendência', 'Área de motos com pendência' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 13);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 14, 2, 'reparos simples', 'Área para reparos simples' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 14);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 15, 2, 'para alugar', 'Área de motos disponíveis para aluguel' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 15);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 16, 2, 'sem placa', 'Área de motos sem placa' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 16);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 17, 3, 'defeito motor', 'Área de motos com defeito no motor' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 17);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 18, 3, 'dano estrutural', 'Área de motos com dano estrutural' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 18);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 19, 3, 'minha mottu', 'Área de motos da Mottu' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 19);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 20, 3, 'agendamento', 'Área de motos aguardando agendamento' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 20);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 21, 3, 'pendência', 'Área de motos com pendência' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 21);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 22, 3, 'reparos simples', 'Área para reparos simples' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 22);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 23, 3, 'para alugar', 'Área de motos disponíveis para aluguel' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 23);
-INSERT INTO Pontos_Leitura (id_ponto, id_patio, nome_ponto, descricao) 
-SELECT 24, 3, 'sem placa', 'Área de motos sem placa' WHERE NOT EXISTS (SELECT 1 FROM Pontos_Leitura WHERE id_ponto = 24);
 
 -- Inserir dados de exemplo para Movimentações (motos distribuídas pelos pontos)
 -- Só insere se não existir (sem IDs específicos para evitar conflitos)
@@ -93,10 +61,10 @@ SELECT 'MOTO004', 5, '2024-01-15 11:30:00' WHERE NOT EXISTS (SELECT 1 FROM Movim
 INSERT INTO Movimentacoes (id_moto, id_ponto, data_hora) 
 SELECT 'MOTO005', 5, '2024-01-15 12:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO005' AND id_ponto = 5);
 INSERT INTO Movimentacoes (id_moto, id_ponto, data_hora) 
-SELECT 'MOTO006', 15, '2024-01-15 13:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO006' AND id_ponto = 15);
+SELECT 'MOTO006', 7, '2024-01-15 13:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO006' AND id_ponto = 7);
 INSERT INTO Movimentacoes (id_moto, id_ponto, data_hora) 
-SELECT 'MOTO007', 11, '2024-01-15 14:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO007' AND id_ponto = 11);
+SELECT 'MOTO007', 3, '2024-01-15 14:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO007' AND id_ponto = 3);
 INSERT INTO Movimentacoes (id_moto, id_ponto, data_hora) 
-SELECT 'MOTO008', 16, '2024-01-15 15:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO008' AND id_ponto = 16);
+SELECT 'MOTO008', 8, '2024-01-15 15:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO008' AND id_ponto = 8);
 INSERT INTO Movimentacoes (id_moto, id_ponto, data_hora) 
-SELECT 'MOTO009', 17, '2024-01-15 16:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO009' AND id_ponto = 17);
+SELECT 'MOTO009', 1, '2024-01-15 16:00:00' WHERE NOT EXISTS (SELECT 1 FROM Movimentacoes WHERE id_moto = 'MOTO009' AND id_ponto = 1);
