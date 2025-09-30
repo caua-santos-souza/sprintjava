@@ -1,6 +1,7 @@
 package com.mottu.trackyard.controller;
 
 import com.mottu.trackyard.dto.MotosDTO;
+import com.mottu.trackyard.dto.MotoComPontoAtualDTO;
 import com.mottu.trackyard.dto.MovimentacoesDTO;
 import com.mottu.trackyard.service.MotoService;
 import com.mottu.trackyard.service.MovimentacaoService;
@@ -56,15 +57,15 @@ public class MotoController {
         return ResponseEntity.ok("Moto de ID: " + idMoto + " foi deletada com sucesso!");
     }
 
-    //Método GET para exibir uma única moto através da placa
+    //Método GET para exibir uma única moto através da placa com ponto atual
     @GetMapping("/placa/{placa}")
-    public ResponseEntity<MotosDTO> findByPlaca(@PathVariable String placa) {
+    public ResponseEntity<MotoComPontoAtualDTO> findByPlaca(@PathVariable String placa) {
         return ResponseEntity.ok(motoService.findByPlaca(placa));
     }
 
-    //Método PUT para atualizar moto por placa (para QR Code)
+    //Método PUT para atualizar moto por placa (para QR Code) com ponto atual
     @PutMapping("/placa/{placa}")
-    public ResponseEntity<MotosDTO> updateMotoByPlaca(@PathVariable String placa, @Valid @RequestBody MotosDTO dto) {
+    public ResponseEntity<MotoComPontoAtualDTO> updateMotoByPlaca(@PathVariable String placa, @Valid @RequestBody MotosDTO dto) {
         return ResponseEntity.ok(motoService.updateMotoByPlaca(placa, dto));
     }
 

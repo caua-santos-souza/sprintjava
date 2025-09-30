@@ -1,21 +1,28 @@
 package com.mottu.trackyard.service;
 
 import com.mottu.trackyard.dto.MotosDTO;
+import com.mottu.trackyard.dto.MotoComPontoAtualDTO;
 import com.mottu.trackyard.entity.Motos;
+import com.mottu.trackyard.entity.Movimentacoes;
 import com.mottu.trackyard.repository.MotosRepository;
+import com.mottu.trackyard.repository.MovimentacoesRepository;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MotoService {
 
     private final MotosRepository motosRepository;
+    private final MovimentacoesRepository movimentacoesRepository;
 
-    public MotoService(MotosRepository motosRepository) {
+    public MotoService(MotosRepository motosRepository, MovimentacoesRepository movimentacoesRepository) {
         this.motosRepository = motosRepository;
+        this.movimentacoesRepository = movimentacoesRepository;
     }
 
     public MotosDTO createMoto(MotosDTO dto) {
@@ -63,18 +70,22 @@ public class MotoService {
         motosRepository.delete(moto);
     }
 
-    //Exibe uma determinada moto por placa
-    public MotosDTO findByPlaca(String placa) {
+    //Exibe uma determinada moto por placa com ponto atual
+    public MotoComPontoAtualDTO findByPlaca(String placa) {
         Motos moto = motosRepository.findByPlaca(placa);
         if (moto == null) {
             throw new RuntimeException("Moto não encontrada com a placa: " + placa);
         }
-        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+        
+        // Buscar a movimentação mais recente para obter o ponto atual
+        String pontoAtual = obterPontoAtual(moto.getIdMoto());
+        
+        return new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), pontoAtual);
     }
 
-    //Atualiza uma moto por placa (para QR Code)
+    //Atualiza uma moto por placa (para QR Code) com ponto atual
     @CacheEvict(value = "motos", allEntries = true)
-    public MotosDTO updateMotoByPlaca(String placa, MotosDTO dto) {
+    public MotoComPontoAtualDTO updateMotoByPlaca(String placa, MotosDTO dto) {
         Motos moto = motosRepository.findByPlaca(placa);
         if (moto == null) {
             throw new RuntimeException("Moto não encontrada com a placa: " + placa);
@@ -84,6 +95,24 @@ public class MotoService {
         moto.setModelo(dto.modelo());
         motosRepository.save(moto);
         
-        return new MotosDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca());
+        // Buscar o ponto atual após a atualização
+        String pontoAtual = obterPontoAtual(moto.getIdMoto());
+        
+        return new MotoComPontoAtualDTO(moto.getIdMoto(), moto.getModelo(), moto.getPlaca(), pontoAtual);
+    }
+
+    //Método auxiliar para obter o ponto atual da moto
+    private String obterPontoAtual(String idMoto) {
+        List<Movimentacoes> movimentacoes = movimentacoesRepository.findByMotoIdMoto(idMoto);
+        if (movimentacoes.isEmpty()) {
+            return "Sem movimentação";
+        }
+        
+        // Retorna o ponto da movimentação mais recente
+        Movimentacoes ultimaMovimentacao = movimentacoes.stream()
+            .max((m1, m2) -> m1.getDataHora().compareTo(m2.getDataHora()))
+            .orElse(null);
+            
+        return ultimaMovimentacao != null ? ultimaMovimentacao.getPontoLeitura().getNomePonto() : "Sem movimentação";
     }
 }

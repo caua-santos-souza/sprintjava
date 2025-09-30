@@ -85,11 +85,11 @@ O projeto usa o banco de dados H2 em memória. Acesse em:
 |--------|----------|-----------|--------------|----------|
 | **GET** | `/api/motos` | Lista todas as motos (paginado) | - | `200 OK` - Lista de motos |
 | **GET** | `/api/motos/{id}` | Busca moto por ID | - | `200 OK` - Dados da moto |
-| **GET** | `/api/motos/placa/{placa}` | Busca moto por placa | - | `200 OK` - Dados da moto |
+| **GET** | `/api/motos/placa/{placa}` | Busca moto por placa com ponto atual | - | `200 OK` - Dados da moto + ponto |
 | **GET** | `/api/motos/{id}/historico` | Histórico de movimentações | - | `200 OK` - Lista de movimentações |
 | **POST** | `/api/motos` | Cria nova moto | `{"idMoto": "MOTO001", "modelo": "Pop", "placa": "ABC-1234"}` | `201 Created` |
 | **PUT** | `/api/motos/{id}` | Atualiza moto por ID | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
-| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (QR Code)** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` |
+| **PUT** | `/api/motos/placa/{placa}` | **🎯 Atualiza moto por placa (QR Code) com ponto atual** | `{"idMoto": "MOTO001", "modelo": "Sport", "placa": "ABC-1234"}` | `200 OK` - Dados atualizados + ponto |
 | **DELETE** | `/api/motos/{id}` | Deleta moto | - | `200 OK` - Mensagem de sucesso |
 
 ### 📍 **Pontos de Leitura** (`/api/pontos-leitura`)
