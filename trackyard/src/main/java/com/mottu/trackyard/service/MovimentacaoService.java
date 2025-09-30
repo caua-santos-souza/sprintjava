@@ -41,8 +41,8 @@ public class MovimentacaoService {
         Movimentacoes movimentacao = new Movimentacoes();
         movimentacao.setMoto(moto);
         movimentacao.setPontoLeitura(ponto);
-        // Subtrai 3 horas para ajustar UTC para horário de Brasília
-        movimentacao.setDataHora(dto.dataHora() != null ? dto.dataHora().minusHours(3) : LocalDateTime.now().minusHours(3));
+        // Adiciona 3 horas para ajustar UTC para horário de Brasília
+        movimentacao.setDataHora(dto.dataHora() != null ? dto.dataHora().plusHours(3) : LocalDateTime.now().plusHours(3));
         movimentacoesRepository.save(movimentacao);
     }
 
@@ -57,7 +57,7 @@ public class MovimentacaoService {
                 m.getIdMovimentacao(),
                 m.getMoto().getIdMoto(),
                 m.getPontoLeitura().getIdPonto(),
-                m.getDataHora().plusHours(3) // Adiciona 3 horas para exibir no horário correto
+                m.getDataHora().minusHours(3) // Subtrai 3 horas para exibir no horário correto
             ))
             .collect(Collectors.toList());
         return new PageImpl<>(dtos, pageable, movimentacoes.getTotalElements());
@@ -71,7 +71,7 @@ public class MovimentacaoService {
             movimentacao.getIdMovimentacao(),
             movimentacao.getMoto().getIdMoto(),
             movimentacao.getPontoLeitura().getIdPonto(),
-            movimentacao.getDataHora().plusHours(3) // Adiciona 3 horas para exibir no horário correto
+            movimentacao.getDataHora().minusHours(3) // Subtrai 3 horas para exibir no horário correto
         );
     }
 }
