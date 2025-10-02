@@ -119,7 +119,7 @@ az container delete --resource-group rg-cp4-rm559093 --name aci-app-cp4-rm559093
 az group delete --name rg-cp4-rm559093 --yes --no-wait
 ```
 
-### 🗄️ Configuração do Banco
+## 🗄️ Configuração do Banco
 
 A aplicação está configurada para usar:
 - **Oracle Database**: oracle.fiap.com.br:1521/orcl
