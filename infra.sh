@@ -2,8 +2,8 @@
 set -euo pipefail
 
 # Defaults - override via ENV
-RM="${RM:-559093}"
-LOCATION="${LOCATION:-eastus}"
+RM="${RM:-SEU_RM_OU_ID_AQUI}"
+LOCATION="${LOCATION:-brazilsouth}"
 RG="${RG:-rg-cp4-rm${RM}}"
 ACR="${ACR:-acrcp4rm${RM}}"
 
